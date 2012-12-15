@@ -82,4 +82,20 @@ describe RateLimiter do
     # wait for all threads to finish execution
     @threads.each { |t| t.join }
   end
+  
+  it "can be nested into other rate-limiters" do
+    ratelimiter1 = RateLimiter.new(:test1, {:threshold => 2, :interval => 0.25})
+    ratelimiter2 = RateLimiter.new(:test2, {:threshold => 1, :interval => 0.1})
+
+    start_time = Time.now.to_f
+
+    run_threads(6, ratelimiter1) do
+      ratelimiter2.within_constraints {}
+    end
+  
+    @threads.each { |t| t.join }
+    execution_time = Time.now.to_f - start_time   
+    
+    execution_time.should be >= 0.6
+  end
 end

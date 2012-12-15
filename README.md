@@ -18,8 +18,8 @@ execution handles which allows to also provide full functionality in multi-threa
 
 ### Outlook
 
-This rate-limiter must not be used for API limits only of course. If you have other use-cases I am curious to know
-about it. Please send me an email.
+This rate-limiter must not be used for API limits only of course. Another use-case would be to send emails in a given
+interval. If you have other use-cases I am curious to know about it. Please send me an email.
 
 ## Usage
 
@@ -43,5 +43,21 @@ This would be a sequential run. But you can also use threads:
       # make API request
     end
   }
+end
+```
+
+You can also nest rate-limiters for multiple API limits:
+
+```ruby
+# allow 2000 executions per day and 5 executions / second
+day_ratelimiter = RateLimiter.new(:day_requests, {:threshold => 3000, :interval => 86400})
+second_ratelimiter = RateLimiter.new(:second_requests, {:threshold => 5, :interval => 1})
+
+5000.times do
+  day_ratelimiter.within_constraints do
+  	second_ratelimiter.within_constraints do
+    	# make API request
+		end
+  end
 end
 ```
