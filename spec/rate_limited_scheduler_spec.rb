@@ -1,7 +1,7 @@
 require 'rspec/mocks'
-require './lib/rate_limiter.rb'
+require './lib/rate_limited_scheduler.rb'
 
-describe RateLimiter do
+describe RateLimitedScheduler do
   before(:each) do
     @threads = []
   end
@@ -25,7 +25,7 @@ describe RateLimiter do
     interval = 0.5
     n_executors = 5
 
-    ratelimiter = RateLimiter.new(:test, {:threshold => threshold, :interval => interval})
+    ratelimiter = RateLimitedScheduler.new(:test, {:threshold => threshold, :interval => interval})
     
     start_time = Time.now.to_f
     run_threads(n_executors, ratelimiter) {}
@@ -40,7 +40,7 @@ describe RateLimiter do
   end    
     
   it "should ensure that an execution that expires the given interval will delay future executions in order to hold the constraints" do
-    ratelimiter = RateLimiter.new(:test, {:threshold => 2, :interval => 0.2})
+    ratelimiter = RateLimitedScheduler.new(:test, {:threshold => 2, :interval => 0.2})
     
     start_time = Time.now.to_f
     run_threads(5, ratelimiter) { |i| sleep (i+1)*0.1 }
@@ -60,7 +60,7 @@ describe RateLimiter do
   end
     
   it "should not allow more executions at the same time rather than defined in the given threshold" do
-    ratelimiter = RateLimiter.new(:test, {:threshold => 2, :interval => 1})
+    ratelimiter = RateLimitedScheduler.new(:test, {:threshold => 2, :interval => 1})
     threads = []
     
     run_threads(3, ratelimiter) { sleep 1 }
@@ -73,7 +73,7 @@ describe RateLimiter do
   end
   
   it "should avoid starvation" do
-    ratelimiter = RateLimiter.new(:test, {:threshold => 5, :interval => 0.1})
+    ratelimiter = RateLimitedScheduler.new(:test, {:threshold => 5, :interval => 0.1})
     test_object = double('test object')
     test_object.should_receive(:test).exactly(20).times
     
@@ -84,8 +84,8 @@ describe RateLimiter do
   end
   
   it "can be nested into other rate-limiters" do
-    ratelimiter1 = RateLimiter.new(:test1, {:threshold => 2, :interval => 0.25})
-    ratelimiter2 = RateLimiter.new(:test2, {:threshold => 1, :interval => 0.1})
+    ratelimiter1 = RateLimitedScheduler.new(:test1, {:threshold => 2, :interval => 0.25})
+    ratelimiter2 = RateLimitedScheduler.new(:test2, {:threshold => 1, :interval => 0.1})
 
     start_time = Time.now.to_f
 

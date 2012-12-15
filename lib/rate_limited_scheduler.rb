@@ -1,7 +1,7 @@
 require 'redis'
 require 'redis-namespace'
 
-class RateLimiter
+class RateLimitedScheduler
   class Configuration
     attr_accessor :default_threshold, :default_interval
   end

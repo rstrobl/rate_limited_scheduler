@@ -1,7 +1,7 @@
-Rate-Limiter
-============
+Rate-limited Scheduler
+======================
 
-[![Build Status](https://travis-ci.org/rstrobl/rate_limiter.png)](https://travis-ci.org/rstrobl/rate_limiter)
+[![Build Status](https://travis-ci.org/rstrobl/rate_limited_scheduler.png)](https://travis-ci.org/rstrobl/rate_limited_scheduler)
 
 This rate-limiter is made for sensitive, time-critical API requests which means that even limits with short time 
 intervals such as 5 requests per second can be hold in a multi-threading environment. It implements Redis-based
@@ -18,14 +18,14 @@ execution handles which allows to also provide full functionality in multi-threa
 
 ### Outlook
 
-This rate-limiter must not be used for API limits only of course. Another use-case would be to send emails in a given
-interval. If you have other use-cases I am curious to know about it. Please send me an email.
+This rate-limiter must not be used for API limits only of course. Another use-case would be to frequently send emails 
+during a given time interval. If you have other use-cases I am curious to know about it. Please send me an email.
 
 ## Usage
 
 ```ruby
-# instantiate RateLimiter with Redis bucket named :api_requests and a rate of 5 executions / 0.5 seconds
-ratelimiter = RateLimiter.new(:api_requests, {:threshold => 5, :interval => 0.5})
+# instantiate RateLimitedScheduler with Redis bucket named :api_requests and a rate of 5 executions / 0.5 seconds
+ratelimiter = RateLimitedScheduler.new(:api_requests, {:threshold => 5, :interval => 0.5})
 
 10.times do
   ratelimiter.within_constraints do
@@ -50,8 +50,8 @@ You can also nest rate-limiters for multiple API limits:
 
 ```ruby
 # allow 2000 executions per day and 5 executions / second
-day_ratelimiter = RateLimiter.new(:day_requests, {:threshold => 3000, :interval => 86400})
-second_ratelimiter = RateLimiter.new(:second_requests, {:threshold => 5, :interval => 1})
+day_ratelimiter = RateLimitedScheduler.new(:day_requests, {:threshold => 3000, :interval => 86400})
+second_ratelimiter = RateLimitedScheduler.new(:second_requests, {:threshold => 5, :interval => 1})
 
 5000.times do
   day_ratelimiter.within_constraints do
