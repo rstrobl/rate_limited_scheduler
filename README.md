@@ -3,9 +3,9 @@ Rate-limited Scheduler
 
 [![Build Status](https://travis-ci.org/rstrobl/rate_limited_scheduler.png)](https://travis-ci.org/rstrobl/rate_limited_scheduler)
 
-This rate-limiter is made for sensitive, time-critical API requests which means that even limits with short time 
-intervals such as 5 requests per second can be hold in a multi-threading environment. It implements Redis-based
-execution handles.
+This rate-limited scheduler is made for requests to APIs with sensitive, time-critical access restrictions which 
+means that even limits with short time intervals such as 5 requests per second can be hold in a multi-threading 
+environment. It implements Redis-based execution handles.
 
 ### Motivation
 
