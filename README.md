@@ -3,9 +3,9 @@ Rate-limited Scheduler
 
 [![Build Status](https://travis-ci.org/rstrobl/rate_limited_scheduler.png)](https://travis-ci.org/rstrobl/rate_limited_scheduler)
 
-This rate-limiter is made for sensitive, time-critical API requests which means that even limits with short time 
-intervals such as 5 requests per second can be hold in a multi-threading environment. It implements Redis-based
-execution handles.
+This rate-limited scheduler is made for requests to APIs with sensitive, time-critical access restrictions which 
+means that even limits with short time intervals such as 5 requests per second can be hold in a multi-threading 
+environment. It implements Redis-based execution handles.
 
 ### Motivation
 
@@ -20,6 +20,10 @@ execution handles which allows to also provide full functionality in multi-threa
 
 This rate-limiter must not be used for API limits only of course. Another use-case would be to frequently send emails 
 during a given time interval. If you have other use-cases I am curious to know about it. Please send me an email.
+
+## Installation
+
+	gem install rate_limited_scheduler
 
 ## Usage
 
@@ -55,9 +59,9 @@ second_ratelimiter = RateLimitedScheduler.new(:second_requests, {:threshold => 5
 
 5000.times do
   day_ratelimiter.within_constraints do
-  	second_ratelimiter.within_constraints do
-    	# make API request
-		end
+    second_ratelimiter.within_constraints do
+      # make API request
+    end
   end
 end
 ```
