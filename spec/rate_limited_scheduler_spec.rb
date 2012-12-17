@@ -98,4 +98,10 @@ describe RateLimitedScheduler do
     
     execution_time.should be >= 0.6
   end
+  
+  it "should return the last statement of the execution block" do
+    ratelimiter = RateLimitedScheduler.new(:test, {:threshold => 1, :interval => 1})    
+    ret = ratelimiter.within_constraints { 'foobar' }
+    ret.should eq('foobar')
+  end
 end

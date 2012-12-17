@@ -1,7 +1,7 @@
 Gem::Specification.new do |s|
   s.name        = 'rate_limited_scheduler'
-  s.version     = '0.0.1'
-  s.date        = '2012-12-15'
+  s.version     = '0.0.2'
+  s.date        = '2012-12-17'
   s.summary     = 'A Redis-based rate-limited scheduler for requests to APIs with sensitive and time-critical access restrictions'
   s.description = "This rate-limited scheduler is made for requests to APIs with sensitive, time-critical access restrictions which means that even limits with short time intervals such as 5 requests per second can be hold in a multi-threading environment. It implements Redis-based execution handles."
   s.authors     = ['Robert Strobl']

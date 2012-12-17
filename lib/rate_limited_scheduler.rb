@@ -34,8 +34,9 @@ class RateLimitedScheduler
   
   def within_constraints(&block)      
     start_execution
-    yield
+    return_value = yield
     stop_execution
+    return_value
   end
   
   def count_active_executions
