@@ -17,14 +17,15 @@ class RateLimitedScheduler
     config.default_interval = 1
   end  
   
-  def initialize(bucket, constraint)
+  def initialize(bucket, constraint, redis_options={})
     # default: 5 executions per second
     constraint[:threshold] ||= @@configuration.default_threshold
     constraint[:interval] ||= @@configuration.default_interval
-    
+
     @bucket = bucket
+    @redis_options = redis_options
     @constraint = constraint
-    @redis = Redis::Namespace.new(:ratelimiter, { :redis => Redis.new })
+    @redis = Redis::Namespace.new(:ratelimiter, { :redis => Redis.new(@redis_options) })
     
     @redis.multi do
       @redis.del(@bucket)
@@ -58,7 +59,7 @@ class RateLimitedScheduler
   end
   
   def wait_for_execution_handle
-    subscriber = Redis::Namespace.new(:ratelimiter, { :redis => Redis.new })
+    subscriber = Redis::Namespace.new(:ratelimiter, { :redis => Redis.new(@redis_options) })
     
     subscriber.subscribe(:new_execution_handle_available) do |on|
       execution_handle = get_execution_handle(subscriber)

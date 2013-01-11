@@ -20,6 +20,12 @@ describe RateLimitedScheduler do
     end
   end
   
+  it "should throw an exception when the connection to the redis server failed" do
+    expect { 
+      RateLimitedScheduler.new(:test, {:threshold => 1, :interval => 1}, {:host => 'unknown_host'})
+    }.to raise_error
+  end
+  
   it "should have a minimum overall execution time of n threads that finish their execution during the given interval" do
     threshold = 2
     interval = 0.5
