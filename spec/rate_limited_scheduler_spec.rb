@@ -105,6 +105,18 @@ describe RateLimitedScheduler do
     execution_time.should be >= 0.6
   end
   
+  it "should release handles when an exception is thrown" do
+    ratelimiter = RateLimitedScheduler.new(:test, {:threshold => 1, :interval => 0.1})
+
+    expect {
+  	  ratelimiter.within_constraints do
+  		  raise RuntimeError
+  	  end
+    }.to raise_error
+
+    ratelimiter.count_free_execution_handles.should be(1)    
+  end
+  
   it "should return the last statement of the execution block" do
     ratelimiter = RateLimitedScheduler.new(:test, {:threshold => 1, :interval => 1})    
     ret = ratelimiter.within_constraints { 'foobar' }
